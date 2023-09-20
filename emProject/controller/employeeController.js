@@ -13,6 +13,32 @@ const createEmployee = async (req, resp) => {
   }
 };
 
+const getAllEmployee = async (req, resp) => {
+  try {
+    const employee = await employeeModel.find();
+    if(employee){
+      resp.status(200).send({status : 200, employee, });
+    }else{
+      resp.status(404).send({status : 404, message : "Database is empty" });
+    }
+  } catch (error) {
+    resp.send({ Error: error.message });
+  }
+};
+
+const getEmployeeById = async (req, resp) => {
+  try {
+    const employee = await employeeModel.findById({_id : req.params._id});
+    if(employee){
+      resp.status(200).send({status : 200, employee, });
+    }else{
+      resp.status(404).send({status : 404, message : "Employee not found" });
+    }
+  } catch (error) {
+    resp.send({ Error: error.message });
+  }
+};
+
 const getEmployeeByQuery = async (req, resp) => {
   try {
     const employee = (
@@ -29,17 +55,6 @@ const getEmployeeByQuery = async (req, resp) => {
         .status(404)
         .send({ status: 404, message: "Employee Not Found", employeeData });
     }
-  } catch (error) {
-    resp.send({ Error: error.message });
-  }
-};
-
-const getAllEmployee = async (req, resp) => {
-  try {
-    const employee = new ApiFeatures(employeeModel.find());
-    const data = await employee.query;
-    console.log(data);
-    resp.send({ data });
   } catch (error) {
     resp.send({ Error: error.message });
   }
@@ -82,8 +97,9 @@ const deleteEmployee = async (req, resp) => {
 
 module.exports = {
   createEmployee,
-  getEmployeeByQuery,
   getAllEmployee,
+  getEmployeeById,
+  getEmployeeByQuery,
   updateEmployee,
   deleteEmployee,
 };
